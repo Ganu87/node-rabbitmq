@@ -3,8 +3,13 @@ const amqp = require('amqplib');
 const queue = "r-test";
 
 
-async function sendMessage(message) {
+async function sendMessage(data) {
     try {
+        console.log(data);
+        if (!data) {
+            throw new Error("Data is required for sending a message");
+        }
+
         console.log("Connecting to RabbitMQ...");
         const connection = await amqp.connect("amqp://localhost");
         console.log("Connected to RabbitMQ");
@@ -12,11 +17,12 @@ async function sendMessage(message) {
         const channel = await connection.createChannel();
         console.log("Channel created");
 
+        //const queue = "r-test"; // Ensure this matches your queue name
         await channel.assertQueue(queue);
         console.log(`Queue "${queue}" asserted`);
 
-        channel.sendToQueue(queue, Buffer.from(message));
-        console.log("Message sent:", message);
+        channel.sendToQueue(queue, Buffer.from(JSON.stringify(data)));
+        console.log("Message sent:", data);
 
         await channel.close();
         await connection.close();
@@ -25,6 +31,7 @@ async function sendMessage(message) {
         console.error("Error sending message:", err);
     }
 }
+
 
 
 // async function sendMessage(message) {

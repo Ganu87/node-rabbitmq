@@ -5,9 +5,9 @@ const consumer = require('./consumer');
 const router = express.Router();
 
 router.post("/send", async (req, res) => {
-    const { message } = req.body;
+    const { details } = req.body;
     try {
-        await producer.sendMessage(message);
+        await producer.sendMessage(details);
         res.status(200).send("Message sent to RabbitMQ");
     } catch (err) {
         res.status(500).send({ error: "Error sending message"+err });
