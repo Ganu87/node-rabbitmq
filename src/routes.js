@@ -23,4 +23,13 @@ router.get("/consume", async (req, res) => {
     }
 });
 
+router.get("/consumeBulk", async (req, res) => {
+    try {
+        await consumer.startConsumerBulk();
+        res.status(200).send("Bulk Consumer started");
+    } catch (err) {
+        res.status(500).send({ error: "Error starting Bulk consumer"+err });
+    }
+});
+
 module.exports = router;
